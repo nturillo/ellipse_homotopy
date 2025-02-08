@@ -200,9 +200,11 @@ int num_loops(double d, double x_0, double y_0, double a, int num_steps) {
     return num_loops;
 }
 
-int max_loops(double d, int n, double x_0[], double y_0[], double max_point[2], double a, int num_steps) {
+int max_loops(double d, int n, double x_0[], double y_0[], double max_point[2], double a, int num_steps, int stop_early) {
     // find the maximum number of loops made over all points in the list
     // see num_loops(double d, double x_0, double y_0, double a, int num_steps) for parameter descriptions
+    // max_point = the point that makes the most loops
+    // stop_early = if not 0, stop early after finding a point that makes stop_early loops
 
     int max_loops = 0;
     max_point[0] = -1;
@@ -213,25 +215,10 @@ int max_loops(double d, int n, double x_0[], double y_0[], double max_point[2], 
             max_loops = loops;
             max_point[0] = x_0[i];
             max_point[1] = y_0[i];
+            if (stop_early && loops >= stop_early) {
+                return max_loops;
+            }
         }
     }
     return max_loops;
-}
-
-// Example usage
-int main() {
-    // Example: x^4 - 10x^3 + 35x^2 - 50x + 24 = 0
-    const double coeffs[5] = {24, -50, 35, -10, 1};
-    double roots[8];
-
-    gsl_poly_complex_workspace *w = gsl_poly_complex_workspace_alloc(5);
-    gsl_poly_complex_solve(coeffs, 5, w, roots);
-    gsl_poly_complex_workspace_free(w);
-
-
-    for (int i = 0; i < 8; i++) {
-        printf("Root %d: %lf\n", i + 1, roots[i]);
-    }
-
-    return 0;
 }
