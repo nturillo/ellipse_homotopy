@@ -64,6 +64,7 @@ for a_val in a_vals:
 
 ## plot d vs a
 plt.clf()
+plt.figure(dpi=300)
 plt.plot(a_vals, d_vals)
 plt.xlabel('a')
 plt.ylabel('r')
