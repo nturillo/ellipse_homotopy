@@ -59,7 +59,7 @@ Install GSL
 ```sh
 sudo apt install libgsl-dev
 ```
-Compile C library (assuming you're using gcc, which if you're on linux you probably are. If you know you're not using gcc then I'm sure you can figure it out from the makefile.)
+Compile C library
 ```sh
 make
 ```
