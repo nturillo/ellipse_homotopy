@@ -23,6 +23,22 @@ def get_ellipse_points(interval, a, b = 1):
     Ts = [t_from_length(i, a, b) for i in interval_stretched]
     return [(a*cos(t), b*sin(t)) for t in Ts]
 
+def get_ellipse_points_ts(interval, a, b = 1):
+    eccentricity_sq = 1.0 - (b/a)**2
+    ellipse_circumference = 4 * a * ellipe(eccentricity_sq)
+    interval_stretched = interval * ellipse_circumference
+    Ts = [t_from_length(i, a, b) for i in interval_stretched]
+    return Ts
+
+def plot_ellipse_points(interval, a, b = 1, img_name = "points_on_ellipse.png"):
+    points = get_ellipse_points(interval, a, b)
+    points = np.array(points)
+    t = np.linspace(0, 2*np.pi, 100)
+    plt.plot(a*np.cos(t), b*np.sin(t), 'k')
+    plt.scatter(points[:,0], points[:,1])
+    plt.axis('equal')
+    plt.savefig(img_name)
+
 ## functions for computing points on ellipse d Euclidean distance apart
 import ctypes
 import matplotlib.pyplot as plt

@@ -35,7 +35,7 @@ def max_loops(d, points, a, num_steps, stop_early = 0):
     return max_loops, max_arr[0], max_arr[1]
 
 ## for a \in [1, sqrt(2)], determine the least d such that there is some point on the ellipse which makes 2 loops after 5 steps of d-distance apart points
-num_ellipses = 100
+num_ellipses = 10000
 num_samples = 100
 num_steps = 5
 num_loops = 2
@@ -77,7 +77,7 @@ plt.figure(dpi=300)
 
 # plot a couple ellipses for reference
 t = np.linspace(0, np.pi/2, 100)
-for a_val in a_vals[::20]:
+for a_val in a_vals[::2000]:
     plt.plot(a_val * np.cos(t), np.sin(t))
 plt.plot(a_vals[-1] * np.cos(t), np.sin(t))
 
@@ -86,7 +86,7 @@ for i, points in enumerate(max_points):
     # color the points by the value of from red to blue
     plt.scatter(points[0], points[1], color = [i / num_ellipses, 0, 1 - i / num_ellipses])
     # annotate every tenth point
-    if i % 10 == 0 or i == 79 or i == 99:
+    if i % 1000 == 0 or i == 79 or i == 99:
         plt.annotate(f'{i}', (points[0], points[1]), fontsize=6)
 
 ## draw a rectangle around the first 79 points

@@ -4,12 +4,14 @@
 
 #include <gsl/gsl_poly.h>
 
-void find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double a, double result[2]) {
+double find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double a, double result[2]) {
     // give a point p_0 = (x_0, y_0) on an ellipse described by x^2/a^2 + y^2 = 1, find the point p_1 on the ellipse that is d Euclidean distance away from p_0 in the counter-clockwise direction
     // d = distance of interest
     // x_0 = x-coordinate of point on ellipse
     // y_0 = y-coordinate of point on ellipse
     // a = semi-major axis of ellipse
+    // result = array to store the x and y coordinates of the point p_1
+    // returns distance from p_0 to p_1 (should be d)
 
     if (a > sqrt(2)) {
         printf("Warning: find_d_distance_point_on_ellipse not tested for a > sqrt(2)\n");
@@ -20,7 +22,7 @@ void find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double a
     if (a <= sqrt(2) && d >= 2*sqrt(pow(x_0, 2) + pow(y_0, 2))) {
         result[0] = -x_0;
         result[1] = -y_0;
-        return;
+        return sqrt(pow(2*x_0, 2) + pow(2*y_0, 2));
     }
 
     // first, convert point to 1st quadrant
@@ -158,6 +160,8 @@ void find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double a
 
     result[0] = x_ccw;
     result[1] = y_ccw;
+
+    return sqrt(pow(x_ccw - x_0, 2) + pow(y_ccw - y_0, 2));
 }
 
 int num_loops(double d, double x_0, double y_0, double a, int num_steps) {
@@ -198,6 +202,31 @@ int num_loops(double d, double x_0, double y_0, double a, int num_steps) {
     }
 
     return num_loops;
+}
+
+double min_r_given_t(double t, double a) {
+    // given a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the minimum r value such that k_5 appears in VR(E, r)
+    // t = parameter of point on ellipse
+    // a = semi-major axis of ellipse
+
+    double x = a*cos(t);
+    double y = sin(t);
+
+    double left = 0;
+    double right = 2;
+
+    double mid = (left + right)/2;
+    while (right - left > 1e-10) {
+        int loops = num_loops(mid, x, y, a, 5);
+        if (loops >= 2) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+        mid = (left + right)/2;
+    }
+
+    return mid;
 }
 
 int max_loops(double d, int n, double x_0[], double y_0[], double max_point[2], double a, int num_steps, int stop_early) {
