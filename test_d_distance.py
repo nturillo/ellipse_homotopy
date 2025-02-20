@@ -19,13 +19,13 @@ def d_distance_point_error(d, x, y, a):
     return abs(d - libcomp.find_d_distance_point_on_ellipse(d, x, y, a, arr))
 
 ## get ellipse points
-a = 1.3
+a = 1.32995
 interval = np.linspace(0, 1/4, 10000)
 Ts = ellipse_tools.get_ellipse_points_ts(interval, a)
 points = ellipse_tools.get_ellipse_points(interval, a)
 
 ## for each point, get d distance point
-d = 1.98    
+d = 1.95    
 errors = [d_distance_point_error(d, point[0], point[1], a) for point in points]
 
 ## plot errors vs t
