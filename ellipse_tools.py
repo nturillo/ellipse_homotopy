@@ -48,24 +48,44 @@ import numpy as np
 libcomp = ctypes.CDLL('./libcomp.so')
 
 libcomp.find_d_distance_point_on_ellipse.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.POINTER(ctypes.c_double)]
-libcomp.find_d_distance_point_on_ellipse.restype = None
+libcomp.find_d_distance_point_on_ellipse.restype = ctypes.c_double
+
+libcomp.find_d_distance_point_on_ellipse_2.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.POINTER(ctypes.c_double)]
+libcomp.find_d_distance_point_on_ellipse_2.restype = ctypes.c_double
 
 libcomp.num_loops.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int]
 libcomp.num_loops.restype = ctypes.c_int
+
+libcomp.num_loops_2.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int]
+libcomp.num_loops_2.restype = ctypes.c_int
 
 def find_d_distance_point_on_ellipse(d, x, y, a):
     arr = (ctypes.c_double * 2)()
     libcomp.find_d_distance_point_on_ellipse(d, x, y, a, arr)
     return arr[0], arr[1]
 
+def find_d_distance_point_on_ellipse_2(d, t, a):
+    res_t = ctypes.c_double()
+    libcomp.find_d_distance_point_on_ellipse_2(d, t, a, res_t)
+    return res_t.value
+
 def num_loops(d, x_0, y_0, a, num_steps):
     return libcomp.num_loops(d, x_0, y_0, a, num_steps)
+
+def num_loops_2(d, t, a, num_steps):
+    return libcomp.num_loops_2(d, t, a, num_steps)
 
 libcomp.min_r_given_t.argtypes = [ctypes.c_double, ctypes.c_double]
 libcomp.min_r_given_t.restype = ctypes.c_double
 
+libcomp.min_r_given_t_2.argtypes = [ctypes.c_double, ctypes.c_double]
+libcomp.min_r_given_t_2.restype = ctypes.c_double
+
 def min_r_given_t(t, a):
     return libcomp.min_r_given_t(t, a)
+
+def min_r_given_t_2(t, a):
+    return libcomp.min_r_given_t_2(t, a)
 
  
 def plot_k_points_d_Euclid_apart(k, d, t, a, img_name = "points_on_ellipse.png", verbose = True):
@@ -74,12 +94,12 @@ def plot_k_points_d_Euclid_apart(k, d, t, a, img_name = "points_on_ellipse.png",
 
     num_steps = k
     if verbose:
-        loops = num_loops(d, x_0, y_0, a, num_steps)
+        loops = num_loops(d, t, a, num_steps)
         print(f'num_loops = {loops}')
 
     points = [(x_0, y_0)]
     for i in range(num_steps):
-        x, y = find_d_distance_point_on_ellipse(d, points[i][0], points[i][1], a)
+        (x, y) = find_d_distance_point_on_ellipse(d, points[i][0], points[i][1], a)
         points.append((x, y))
 
     ## plot the ellipse as a thin black line
@@ -89,7 +109,7 @@ def plot_k_points_d_Euclid_apart(k, d, t, a, img_name = "points_on_ellipse.png",
     ## plot the points on the ellipse labelled by the step
     points = np.array(points)
     plt.scatter(points[:,0], points[:,1])
-    for i, txt in enumerate(range(num_steps + 1)):
+    for i, txt in enumerate(range(num_steps)):
         plt.annotate(txt, (points[i,0], points[i,1]))
     plt.axis('equal')
 
@@ -98,6 +118,7 @@ def plot_k_points_d_Euclid_apart(k, d, t, a, img_name = "points_on_ellipse.png",
 
     ## save plot
     plt.savefig(img_name)
+    plt.clf()
 
     ## print points
     if verbose:

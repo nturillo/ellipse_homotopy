@@ -9,7 +9,7 @@ libcomp = ctypes.CDLL('./libcomp.so')
 
 
 ## parameters
-a = [1.0] #np.linspace(1.329, 1.331, 40)
+a = [1.0, 1.1, 1.2] # np.linspace(1.329, 1.331, 40)
 num_points = 1000
 
 for a_val in a:

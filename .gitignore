@@ -3,6 +3,10 @@
 !r_vs_a.png
 !points_max_loops.png
 
+*.csv
+*.npy # numpy arrays
+*.obj # 3D objects
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

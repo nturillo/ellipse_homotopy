@@ -4,6 +4,11 @@
 
 #include <gsl/gsl_poly.h>
 
+#define PI 3.14159265358979323846
+
+// computation heavy library for ellipse tools
+// methods ending in _2 use a binary search version of find_d_distance_point_on_ellipse instead of the quartic solver
+
 double find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double a, double result[2]) {
     // give a point p_0 = (x_0, y_0) on an ellipse described by x^2/a^2 + y^2 = 1, find the point p_1 on the ellipse that is d Euclidean distance away from p_0 in the counter-clockwise direction
     // d = distance of interest
@@ -164,6 +169,35 @@ double find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double
     return sqrt(pow(x_ccw - x_0, 2) + pow(y_ccw - y_0, 2));
 }
 
+double find_d_distance_point_on_ellipse_2(double d, double t, double a, double* result_t) {
+    // give a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the point that is d Euclidean distance away from the point in the counter-clockwise direction
+    // d = distance of interest
+    // t = parameter of point on ellipse
+    // a = semi-major axis of ellipse
+    // result = array to store the x and y coordinates of the point p_1
+    // returns distance from p_0 to p_1 (should be d)
+
+    double x_0 = a*cos(t);
+    double y_0 = sin(t);
+
+    double max = t + PI;
+    double min = t;
+
+    double mid = (max + min)/2;
+    double dist = sqrt(pow(x_0 - a*cos(mid), 2) + pow(y_0 - sin(mid), 2));
+    while (fabs(dist - d) > 1e-15) {
+        if (dist > d) {
+            max = mid;
+        } else {
+            min = mid;
+        }
+        mid = (max + min)/2;
+        dist = sqrt(pow(x_0 - a*cos(mid), 2) + pow(y_0 - sin(mid), 2));
+    }
+    *result_t = mid;
+    return dist;
+}
+
 int num_loops(double d, double x_0, double y_0, double a, int num_steps) {
     // given a point p_0 = (x_0, y_0) on an ellipse described by x^2/a^2 + y^2 = 1, AND in the first quadrant, find the number of loops that the point will make around the ellipse if it takes num_steps many steps of d Euclidean distance in the counter-clockwise direction
     // d = distance of interest
@@ -192,11 +226,57 @@ int num_loops(double d, double x_0, double y_0, double a, int num_steps) {
         if (!neg_to_pos && prev_point[1] < 0 && curr_point[1] > 0) {
             neg_to_pos = true;
         }
-        if (neg_to_pos && (x_0 - curr_point[0] > -1e-8)) {
+        if (neg_to_pos && (x_0 > curr_point[0])) {
             num_loops++;
             neg_to_pos = false;
         }
         //printf("Step %d: (%lf, %lf)\n", step + 1, curr_point[0], curr_point[1]);
+        //printf("Neg to Pos: %d\n", neg_to_pos);
+        //printf("Num Loops: %d\n", num_loops);
+    }
+
+    return num_loops;
+}
+
+int num_loops_2(double d, double t, double a, int num_steps) {
+    // given a point p_0 = (a*cos(t), sin(t)) on an ellipse described by x^2/a^2 + y^2 = 1, AND in the first quadrant, find the number of loops that the point will make around the ellipse if it takes num_steps many steps of d Euclidean distance in the counter-clockwise direction
+    // d = distance of interest
+    // t = parameter of point on ellipse
+    // a = semi-major axis of ellipse
+    // num_steps = number of steps to take
+
+    double x_0 = a*cos(t);
+    double y_0 = sin(t);
+
+    if (x_0 < 0 || y_0 < 0) {
+        printf("Point must be in the first quadrant\n");
+        return -1;
+    }
+
+    double curr_point = t;
+    double prev_point;
+
+    bool neg_to_pos = false; // true if the current point has positive y-value and the previous point had negative y-value
+    int num_loops = 0;
+
+    for (int step = 0; step < num_steps; step++) {
+        prev_point = curr_point;
+
+        find_d_distance_point_on_ellipse_2(d, prev_point, a, &curr_point);
+
+        double prev_point_x = a*cos(prev_point);
+        double prev_point_y = sin(prev_point);
+        double curr_point_x = a*cos(curr_point);
+        double curr_point_y = sin(curr_point);
+
+        if (!neg_to_pos && (prev_point_y < 0) && (curr_point_y > 0)) {
+            neg_to_pos = true;
+        }
+        if (neg_to_pos && (x_0 > curr_point_x)) {
+            num_loops++;
+            neg_to_pos = false;
+        }
+        //printf("Step %d: (%lf, %lf)\n", step + 1, a* cos(curr_point), sin(curr_point));
         //printf("Neg to Pos: %d\n", neg_to_pos);
         //printf("Num Loops: %d\n", num_loops);
     }
@@ -218,6 +298,31 @@ double min_r_given_t(double t, double a) {
     double mid = (left + right)/2;
     while (right - left > 1e-10) {
         int loops = num_loops(mid, x, y, a, 5);
+        if (loops >= 2) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+        mid = (left + right)/2;
+    }
+
+    return mid;
+}
+
+double min_r_given_t_2(double t, double a) {
+    // given a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the minimum r value such that k_5 appears in VR(E, r)
+    // t = parameter of point on ellipse
+    // a = semi-major axis of ellipse
+
+    double x = a*cos(t);
+    double y = sin(t);
+
+    double left = 0;
+    double right = 2;
+
+    double mid = (left + right)/2;
+    while (right - left > 1e-10) {
+        int loops = num_loops_2(mid, t, a, 5);
         if (loops >= 2) {
             right = mid;
         } else {
