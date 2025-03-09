@@ -305,6 +305,9 @@ double min_r_given_t(double t, double a) {
         }
         mid = (left + right)/2;
     }
+    //while(num_loops(mid, x, y, a, 5) < 2) {
+    //    mid += 1e-11;
+    //}
 
     return mid;
 }

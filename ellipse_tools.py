@@ -94,7 +94,7 @@ def plot_k_points_d_Euclid_apart(k, d, t, a, img_name = "points_on_ellipse.png",
 
     num_steps = k
     if verbose:
-        loops = num_loops(d, t, a, num_steps)
+        loops = num_loops(d, x_0, y_0, a, num_steps)
         print(f'num_loops = {loops}')
 
     points = [(x_0, y_0)]
