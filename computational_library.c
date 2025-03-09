@@ -169,19 +169,19 @@ double find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double
     return sqrt(pow(x_ccw - x_0, 2) + pow(y_ccw - y_0, 2));
 }
 
-double find_d_distance_point_on_ellipse_2(double d, double t, double a, double* result_t) {
+double find_d_distance_point_on_ellipse_2(double d, double theta, double a, double* result_t) {
     // give a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the point that is d Euclidean distance away from the point in the counter-clockwise direction
     // d = distance of interest
-    // t = parameter of point on ellipse
+    // theta = parameter of point on ellipse
     // a = semi-major axis of ellipse
     // result = array to store the x and y coordinates of the point p_1
     // returns distance from p_0 to p_1 (should be d)
 
-    double x_0 = a*cos(t);
-    double y_0 = sin(t);
+    double x_0 = a*cos(theta);
+    double y_0 = sin(theta);
 
-    double max = t + PI;
-    double min = t;
+    double max = theta + PI;
+    double min = theta;
 
     double mid = (max + min)/2;
     double dist = sqrt(pow(x_0 - a*cos(mid), 2) + pow(y_0 - sin(mid), 2));
@@ -238,22 +238,22 @@ int num_loops(double d, double x_0, double y_0, double a, int num_steps) {
     return num_loops;
 }
 
-int num_loops_2(double d, double t, double a, int num_steps) {
+int num_loops_2(double d, double theta, double a, int num_steps) {
     // given a point p_0 = (a*cos(t), sin(t)) on an ellipse described by x^2/a^2 + y^2 = 1, AND in the first quadrant, find the number of loops that the point will make around the ellipse if it takes num_steps many steps of d Euclidean distance in the counter-clockwise direction
     // d = distance of interest
-    // t = parameter of point on ellipse
+    // theta = parameter of point on ellipse
     // a = semi-major axis of ellipse
     // num_steps = number of steps to take
 
-    double x_0 = a*cos(t);
-    double y_0 = sin(t);
+    double x_0 = a*cos(theta);
+    double y_0 = sin(theta);
 
     if (x_0 < 0 || y_0 < 0) {
         printf("Point must be in the first quadrant\n");
         return -1;
     }
 
-    double curr_point = t;
+    double curr_point = theta;
     double prev_point;
 
     bool neg_to_pos = false; // true if the current point has positive y-value and the previous point had negative y-value
@@ -284,13 +284,13 @@ int num_loops_2(double d, double t, double a, int num_steps) {
     return num_loops;
 }
 
-double min_r_given_t(double t, double a) {
+double min_r_given_theta(double theta, double a) {
     // given a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the minimum r value such that k_5 appears in VR(E, r)
-    // t = parameter of point on ellipse
+    // theta = parameter of point on ellipse
     // a = semi-major axis of ellipse
 
-    double x = a*cos(t);
-    double y = sin(t);
+    double x = a*cos(theta);
+    double y = sin(theta);
 
     double left = 0;
     double right = 2;
@@ -312,13 +312,13 @@ double min_r_given_t(double t, double a) {
     return mid;
 }
 
-double min_r_given_t_2(double t, double a) {
+double min_r_given_theta_2(double theta, double a) {
     // given a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the minimum r value such that k_5 appears in VR(E, r)
-    // t = parameter of point on ellipse
+    // theta = parameter of point on ellipse
     // a = semi-major axis of ellipse
 
-    double x = a*cos(t);
-    double y = sin(t);
+    double x = a*cos(theta);
+    double y = sin(theta);
 
     double left = 0;
     double right = 2;

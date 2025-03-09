@@ -75,21 +75,26 @@ def num_loops(d, x_0, y_0, a, num_steps):
 def num_loops_2(d, t, a, num_steps):
     return libcomp.num_loops_2(d, t, a, num_steps)
 
-libcomp.min_r_given_t.argtypes = [ctypes.c_double, ctypes.c_double]
-libcomp.min_r_given_t.restype = ctypes.c_double
+libcomp.min_r_given_theta.argtypes = [ctypes.c_double, ctypes.c_double]
+libcomp.min_r_given_theta.restype = ctypes.c_double
 
-libcomp.min_r_given_t_2.argtypes = [ctypes.c_double, ctypes.c_double]
-libcomp.min_r_given_t_2.restype = ctypes.c_double
+libcomp.min_r_given_theta_2.argtypes = [ctypes.c_double, ctypes.c_double]
+libcomp.min_r_given_theta_2.restype = ctypes.c_double
 
-def min_r_given_t(t, a):
-    return libcomp.min_r_given_t(t, a)
+def min_r_given_theta(theta, a):
+    return libcomp.min_r_given_theta(theta, a)
 
-def min_r_given_t_2(t, a):
-    return libcomp.min_r_given_t_2(t, a)
+def min_r_given_theta_2(t, a):
+    return libcomp.min_r_given_theta_2(t, a)
 
  
-def plot_k_points_d_Euclid_apart(k, d, t, a, img_name = "points_on_ellipse.png", verbose = True):
-    ## x_0, y_0 starting point
+def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.png", verbose = True):
+    ## plot k many points starting at (a*cos(t), sin(t)) and going around counter-clockwise, each a Euclidean distance d apart
+    ## k = number of points
+    ## d = Euclidean distance apart
+    ## theta = angle of starting point
+    ## a = semi-major axis
+
     x_0, y_0 = get_ellipse_points(np.array([t]), a)[0]
 
     num_steps = k

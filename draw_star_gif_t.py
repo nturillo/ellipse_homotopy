@@ -5,7 +5,9 @@ import tempfile
 from PIL import Image
 import glob
 
-a = np.sqrt(2) - 0.1
+## draw a gif of the star at point (a*cos(t), sin(t)) as t varies
+
+a = np.sqrt(2) - 0.01
 k = 5
 t_list = np.linspace(0.0, 0.25, 100)
 
