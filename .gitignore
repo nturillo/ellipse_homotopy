@@ -1,5 +1,5 @@
 # images
-*.png
+#*.png
 !r_vs_a.png
 !points_max_loops.png
 
