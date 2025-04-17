@@ -26,7 +26,7 @@ def get_ellipse_points(interval, a, b = 1):
 def get_ellipse_points_ts(interval, a, b = 1):
     eccentricity_sq = 1.0 - (b/a)**2
     ellipse_circumference = 4 * a * ellipe(eccentricity_sq)
-    interval_stretched = interval * ellipse_circumference
+    interval_stretched = [i * ellipse_circumference for i in interval]
     Ts = [t_from_length(i, a, b) for i in interval_stretched]
     return Ts
 
@@ -84,18 +84,18 @@ libcomp.min_r_given_theta_2.restype = ctypes.c_double
 def min_r_given_theta(theta, a):
     return libcomp.min_r_given_theta(theta, a)
 
-def min_r_given_theta_2(t, a):
-    return libcomp.min_r_given_theta_2(t, a)
+def min_r_given_theta_2(theta, a):
+    return libcomp.min_r_given_theta_2(theta, a)
 
  
-def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.png", verbose = True):
+def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False):
     ## plot k many points starting at (a*cos(t), sin(t)) and going around counter-clockwise, each a Euclidean distance d apart
     ## k = number of points
     ## d = Euclidean distance apart
     ## theta = angle of starting point
     ## a = semi-major axis
 
-    x_0, y_0 = get_ellipse_points(np.array([t]), a)[0]
+    x_0, y_0 = (a*np.cos(theta), np.sin(theta))
 
     num_steps = k
     if verbose:
@@ -107,23 +107,37 @@ def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.p
         (x, y) = find_d_distance_point_on_ellipse(d, points[i][0], points[i][1], a)
         points.append((x, y))
 
+    ## fix the axis limits
+    fig, ax = plt.subplots()
+    ax.set_xlim(-np.sqrt(2) - 0.1, np.sqrt(2) + 0.1)
+    ax.set_ylim(-1.1, 1.1)
+
     ## plot the ellipse as a thin black line
     t = np.linspace(0, 2*np.pi, 100)
-    plt.plot(a*np.cos(t), np.sin(t), 'k')
+    ax.plot(a*np.cos(t), np.sin(t), 'k')
+
+    ## foci
+    if (plot_foci):
+        c = np.sqrt(a**2 - 1)
+        ax.scatter([-c, c], [0, 0], color='red')
 
     ## plot the points on the ellipse labelled by the step
     points = np.array(points)
-    plt.scatter(points[:,0], points[:,1])
+    ax.scatter(points[:,0], points[:,1])
     for i, txt in enumerate(range(num_steps)):
         plt.annotate(txt, (points[i,0], points[i,1]))
-    plt.axis('equal')
+    #ax.axis('equal')
 
     ## draw lines between points
-    plt.plot(points[:,0], points[:,1])
+    ax.plot(points[:,0], points[:,1])
+
+    ## add title
+    if titled:
+        ax.set_title(f'k = {k}, d = {d}, theta = {theta}, a = {a}')
 
     ## save plot
     plt.savefig(img_name)
-    plt.clf()
+    plt.close()
 
     ## print points
     if verbose:

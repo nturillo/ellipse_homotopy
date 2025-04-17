@@ -52,14 +52,16 @@ double find_d_distance_point_on_ellipse(double d, double x_0, double y_0, double
     // x = x_0 + (d)(1 - t^2)/(1+t^2)
     // y = y_0 + (d)(2t)/(1+t^2)
     // acquire the following quartic
-    // t^4((-2x_0d + d^2)/(a^2)) + t^3(4y_0d) + t^2(4d^2 - 2d^2/a^2) + t(4y_0d) + (2x_0d + d^2)/(a^2) = 0
+    // t^4((-2x_0d + d^2)/(a^2)) + t^3(4y_0d) + t^2(4a^2d^2 - 2d^2/a^2) + t(4y_0d) + (2x_0d + d^2)/(a^2) = 0
     // At^4 + Bt^3 + Ct^2 + Dt + E = 0
 
-    double A = (-2*x_0*d + pow(d, 2))/(pow(a, 2));
+    double a_2 = pow(a, 2);
+    double d_2 = pow(d, 2);
+    double A = (-2*x_0*d + d_2)/(a_2);
     double B = 4*y_0*d;
-    double C = 4*d*d - 2*pow(d, 2)/pow(a, 2);
+    double C = 4*d_2 - 2*d_2/a_2;
     double D = 4*y_0*d;
-    double E = (2*x_0*d + pow(d, 2))/(pow(a, 2));
+    double E = (2*x_0*d + d_2)/(a_2);
 
     const double coeffs[5] = {E, D, C, B, A};
     double roots[8];
@@ -296,7 +298,7 @@ double min_r_given_theta(double theta, double a) {
     double right = 2;
 
     double mid = (left + right)/2;
-    while (right - left > 1e-10) {
+    while (right - left > 1e-15) {
         int loops = num_loops(mid, x, y, a, 5);
         if (loops >= 2) {
             right = mid;
@@ -325,7 +327,7 @@ double min_r_given_theta_2(double theta, double a) {
 
     double mid = (left + right)/2;
     while (right - left > 1e-10) {
-        int loops = num_loops_2(mid, t, a, 5);
+        int loops = num_loops_2(mid, theta, a, 5);
         if (loops >= 2) {
             right = mid;
         } else {
