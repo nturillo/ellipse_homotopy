@@ -14,8 +14,8 @@ def find_local_maxima(values):
 
 
 ## parameters
-a = [1.329923076923077] #np.linspace(1.329, 1.331, 40)
-num_points = 5000
+a = [1.412273647850328] #np.linspace(1.329, 1.331, 40)
+num_points = 10000
 plot_minima_and_maxima = True 
 
 for i, a_val in enumerate(a):

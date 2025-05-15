@@ -286,10 +286,13 @@ int num_loops_2(double d, double theta, double a, int num_steps) {
     return num_loops;
 }
 
-double min_r_given_theta(double theta, double a) {
-    // given a point on the ellipse parameterized by x = a*cos(t), y = sin(t), find the minimum r value such that k_5 appears in VR(E, r)
+double min_r_given_theta(double theta, double a, int num_steps, int loops) {
+    // given a point on the ellipse parameterized by x = a*cos(t), y = sin(t), 
+    // find the minimum r value such that taking num_steps many steps of r Euclidean distance in the counter-clockwise direction will make loops many loops around the ellipse
     // theta = parameter of point on ellipse
     // a = semi-major axis of ellipse
+    // num_steps = number of steps to take 
+    // loops = number of loops to make
 
     double x = a*cos(theta);
     double y = sin(theta);
@@ -299,17 +302,14 @@ double min_r_given_theta(double theta, double a) {
 
     double mid = (left + right)/2;
     while (right - left > 1e-15) {
-        int loops = num_loops(mid, x, y, a, 5);
-        if (loops >= 2) {
+        int l = num_loops(mid, x, y, a, num_steps);
+        if (l >= loops) {
             right = mid;
         } else {
             left = mid;
         }
         mid = (left + right)/2;
     }
-    //while(num_loops(mid, x, y, a, 5) < 2) {
-    //    mid += 1e-11;
-    //}
 
     return mid;
 }

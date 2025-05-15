@@ -81,14 +81,29 @@ libcomp.min_r_given_theta.restype = ctypes.c_double
 libcomp.min_r_given_theta_2.argtypes = [ctypes.c_double, ctypes.c_double]
 libcomp.min_r_given_theta_2.restype = ctypes.c_double
 
-def min_r_given_theta(theta, a):
-    return libcomp.min_r_given_theta(theta, a)
+def min_r_given_theta(theta, a, num_steps=5, num_loops=2):
+    return libcomp.min_r_given_theta(theta, a, num_steps, num_loops)
 
 def min_r_given_theta_2(theta, a):
     return libcomp.min_r_given_theta_2(theta, a)
 
+def plot_r_vs_theta(a, num_points=10000, img_path = None):
+    if img_path is None:
+        img_path = f"images/r_vs_t_a={a:.3f}.png"
+
+    ## get evenly spaced points 
+    interval = np.linspace(0.0, 0.25, num_points)
+    thetas = get_ellipse_points_ts(interval, a)
+    Rs = [min_r_given_theta(theta, a) for theta in thetas]
+    ## plot
+    plt.clf()
+    plt.plot(thetas, Rs)
+    plt.xlabel('t')
+    plt.ylabel('r')
+    plt.title(f'r vs t, a = {a:.3f}')
+    plt.savefig(img_path)
  
-def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False):
+def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False, star_color='blue'):
     ## plot k many points starting at (a*cos(t), sin(t)) and going around counter-clockwise, each a Euclidean distance d apart
     ## k = number of points
     ## d = Euclidean distance apart
@@ -129,7 +144,7 @@ def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.p
     #ax.axis('equal')
 
     ## draw lines between points
-    ax.plot(points[:,0], points[:,1])
+    ax.plot(points[:,0], points[:,1], color=star_color)
 
     ## add title
     if titled:
@@ -137,7 +152,6 @@ def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.p
 
     ## save plot
     plt.savefig(img_name)
-    plt.close()
 
     ## print points
     if verbose:
