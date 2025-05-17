@@ -7,6 +7,8 @@ Wrappers for that as well as some other tools are in ellipse_tools.py.
 
 All the other python files are scripts written to do specific things using functions from ellipse_tools.
 
+The sage directory is for SageMath scripts, mostly having to do with elimination theory.
+
 # Installation/Usage
 Optional but recommended:
 Create a virtual environment for this python project
