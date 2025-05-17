@@ -27,8 +27,7 @@ Install the python packages:
 pip install -r requirements.txt
 ```
 
-Now you can use ellipse_tools and ripser_ellipse!
-To use wf_ellipse, you'll need to compile the C library.
+Compile the C library:
 First, you'll need to install GSL (GNU Scientific Library) since that is a dependency of the C code.
 
 https://www.gnu.org/software/gsl/
@@ -48,5 +47,3 @@ make
 Sorry, you're on your own, but feel free to message me (Nicco) in the discord if you want some help.
 If you're really interested in programming, I recommend you check out Linux or WSL.
 My life has gotten much easier since using WSL, and it's really easy to set up.
-
-
