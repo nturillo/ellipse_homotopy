@@ -157,3 +157,106 @@ def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.p
     if verbose:
         for i, point in enumerate(points):
             print(f'point {i}: {point}')
+
+def midpoint(points):
+    xsum = 0
+    ysum = 0
+    l = len(points)
+    for p in points:
+        xsum += p[0]
+        ysum += p[1]
+    return (xsum/l,ysum/l)
+
+def plot_k_points_d_Euclid_apart_and_midpoint(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False, star_color='blue'):
+    ## plot k many points starting at (a*cos(t), sin(t)) and going around counter-clockwise, each a Euclidean distance d apart
+    ## k = number of points
+    ## d = Euclidean distance apart
+    ## theta = angle of starting point
+    ## a = semi-major axis
+
+    x_0, y_0 = (a*np.cos(theta), np.sin(theta))
+
+    num_steps = k
+    if verbose:
+        loops = num_loops(d, x_0, y_0, a, num_steps)
+        print(f'num_loops = {loops}')
+
+    points = [(x_0, y_0)]
+    for i in range(num_steps):
+        (x, y) = find_d_distance_point_on_ellipse(d, points[i][0], points[i][1], a)
+        points.append((x, y))
+
+    ## fix the axis limits
+    fig, ax = plt.subplots()
+    ax.set_xlim(-np.sqrt(2) - 0.1, np.sqrt(2) + 0.1)
+    ax.set_ylim(-1.1, 1.1)
+
+    ## plot the ellipse as a thin black line
+    t = np.linspace(0, 2*np.pi, 100)
+    ax.plot(a*np.cos(t), np.sin(t), 'k')
+ 
+    ## foci
+    if (plot_foci):
+        c = np.sqrt(a**2 - 1)
+        ax.scatter([-c, c], [0, 0], color='red')
+
+    ## plot the points on the ellipse labelled by the step
+    points = np.array(points)
+    ax.scatter(points[:,0], points[:,1])
+    for i, txt in enumerate(range(num_steps)):
+        plt.annotate(txt, (points[i,0], points[i,1]))
+    #ax.axis('equal')
+
+    ## draw lines between points
+    ax.plot(points[:,0], points[:,1], color=star_color)
+
+    mpoint = midpoint(points)
+    ax.scatter(mpoint[0],mpoint[1],s=1,color = star_color)
+    ## add title
+    if titled:
+        ax.set_title(f'k = {k}, d = {d}, theta = {theta}, a = {a}')
+
+    ## save plot
+    plt.savefig(img_name)
+
+    ## print points
+    if verbose:
+        for i, point in enumerate(points):
+            print(f'point {i}: {point}')
+
+
+def return_k_points_d_distance(k, d, theta, a):
+    ## plot k many points starting at (a*cos(t), sin(t)) and going around counter-clockwise, each a Euclidean distance d apart
+    ## k = number of points
+    ## d = Euclidean distance apart
+    ## theta = angle of starting point
+    ## a = semi-major axis
+
+    num_steps = k
+    x_0, y_0 = (a*np.cos(theta), np.sin(theta))
+    points = [(x_0, y_0)]
+    for i in range(num_steps):
+        (x, y) = find_d_distance_point_on_ellipse(d, points[i][0], points[i][1], a)
+        points.append((x, y))
+    return(points)
+
+
+def plot_midpoints(points,a,count=0,img_name = "images/plot_one_midpoint.png", col = 'red'):
+    ## fix the axis limits
+    fig, ax = plt.subplots()
+    ax.set_xlim(-np.sqrt(2) - 0.1, np.sqrt(2) + 0.1)
+    ax.set_ylim(-1.1, 1.1)
+
+    ## plot the ellipse as a thin black line
+    t = np.linspace(0, 2*np.pi, 100)
+    ax.plot(a*np.cos(t), np.sin(t), 'k')
+
+    mp = midpoint(points)
+
+    ax.scatter(mp[0],mp[1],s=3,color = col)
+    plt.annotate(count, (mp[0],mp[1]))
+
+    ## save plot
+    plt.savefig(img_name)
+    #ax.axis('equal')
+    plt.close()

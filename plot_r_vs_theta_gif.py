@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 ## draw the smallest star in the ellipse (x/a)^2 + (y)^2 = 1 as a varies
 
-inflection = 1.412273647850328 #1.3299220317449445
+inflection = 1.20 #1.3299220317449445
 range = np.sqrt(2) - inflection
 a_vals = np.linspace(inflection - range, inflection + range, 200)
 t_vals = np.linspace(0.0, 0.25, 500)

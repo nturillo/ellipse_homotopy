@@ -1,6 +1,8 @@
 import numpy as np
 import ctypes
 import matplotlib.pyplot as plt
+import csv
+
 
 import ellipse_tools
 
@@ -14,8 +16,10 @@ def find_local_maxima(values):
 
 
 ## parameters
-a = [1.412273647850328] #np.linspace(1.329, 1.331, 40)
-num_points = 10000
+# 1.412273647850328
+# 1.3299220317449445
+a = [1.3299220317449445+0.005] #np.linspace(1.329, 1.331, 40)
+num_points = 20000
 plot_minima_and_maxima = True 
 
 for i, a_val in enumerate(a):
@@ -45,3 +49,11 @@ for i, a_val in enumerate(a):
             print(f"maxima: {i}, theta: {thetas[i]}, r: {Rs[i]}")
             ellipse_tools.plot_k_points_d_Euclid_apart(k=5, d=Rs[i], theta=thetas[i], a=a_val, img_name=f"{image_dir}/maxima_{i}_a={a_val}.png", verbose=True, titled=True)
 
+        with open(f"csv/output_{a[0]=:.5f}", mode = 'w', newline= '') as file:
+            writer = csv.writer(file)
+            writer.writerow(['min/max', 'num', 'theta','R'])
+            for i in minima_is:
+                writer.writerow(['min', i, thetas[i],Rs[i]])
+            for i in maxima_is:
+                writer.writerow(['max', i, thetas[i],Rs[i]])
+    
