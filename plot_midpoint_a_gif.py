@@ -11,8 +11,8 @@ class point:
         self.color = color
 
 ## draw a gif of the star at point (a*cos(t), sin(t)) as t varies
-important = 1.41227364785032 #1.3299220317449445
-epsilon = 0.0001
+important = 1.3299220317449445  #1.41227364785032
+epsilon = 0.005
 #1.41227364785032 
 a_max = important + epsilon
 a_min = important - epsilon
@@ -20,7 +20,7 @@ k = 5
 t_list = np.linspace(0.0, 0.25, 500)
 
 
-steps = 50000
+steps = 10000
 a_steps = 200
 
 

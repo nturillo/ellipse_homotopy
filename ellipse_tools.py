@@ -158,16 +158,18 @@ def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.p
         for i, point in enumerate(points):
             print(f'point {i}: {point}')
 
-def midpoint(points):
+def midpoint(points,prnt=False):
     xsum = 0
     ysum = 0
-    l = len(points)
-    for p in points:
+    l = len(points[:-1])
+    if prnt:
+        print(points)
+    for p in points[:-1]:
         xsum += p[0]
         ysum += p[1]
     return (xsum/l,ysum/l)
 
-def plot_k_points_d_Euclid_apart_and_midpoint(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False, star_color='blue'):
+def plot_k_points_d_Euclid_apart_and_midpoint(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False, star_color='blue',prnt=False):
     ## plot k many points starting at (a*cos(t), sin(t)) and going around counter-clockwise, each a Euclidean distance d apart
     ## k = number of points
     ## d = Euclidean distance apart
@@ -210,8 +212,9 @@ def plot_k_points_d_Euclid_apart_and_midpoint(k, d, theta, a, img_name = "points
     ## draw lines between points
     ax.plot(points[:,0], points[:,1], color=star_color)
 
-    mpoint = midpoint(points)
+    mpoint = midpoint(points,prnt)
     ax.scatter(mpoint[0],mpoint[1],s=1,color = star_color)
+
     ## add title
     if titled:
         ax.set_title(f'k = {k}, d = {d}, theta = {theta}, a = {a}')
