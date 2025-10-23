@@ -17,7 +17,7 @@ while (max_a - min_a) > 1e-15:
 print(f"a: {a}, min_r(North_Pole): {north_r}, min_r(East_Pole): {east_r}")
 
 # draw ellipse with both stars
-draw_stars = True
+draw_stars = False
 
 if draw_stars:
     import matplotlib.pyplot as plt
