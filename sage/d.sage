@@ -48,16 +48,19 @@ print("East locus:")
 #print(latex(east_locus))
 print(east_locus)
 
+from sage.rings.polynomial.complex_roots import complex_roots
+from sage.rings.polynomial.real_roots import *
 import numpy as np
-Rr.<r> = PolynomialRing(QQ)
+Qr.<r> = PolynomialRing(QQ)
 a_vals = [132/100, 134/100, 140/100, 1414/1000]
 for a_val in a_vals:
-    north_locus_r = Rr(north_locus.subs(a=a_val))
-    east_locus_r = Rr(east_locus.subs(a=a_val))
-    north_roots = north_locus_r.roots(ring=RR)
-    east_roots = east_locus_r.roots(ring=RR)
+    north_locus_r = Qr(north_locus.subs(a=a_val))
+    east_locus_r = Qr(east_locus.subs(a=a_val))
+    tolerance = 0.001
+    north_roots = real_roots(north_locus_r, retval='interval', max_diameter=tolerance)
+    east_roots = real_roots(east_locus_r, retval='interval', max_diameter=tolerance)
 
-    threshold = (4 * sqrt(3) * a_val^2) / (3 *a_val^2 + 1) + 0.00000001 
+    threshold = RR((4 * sqrt(3) * a_val^2) / (3 *a_val^2 + 1))
     #print(f"threshold: {threshold.n()}")
     #print(f"North roots: {north_roots}")
     #print(f"East roots: {east_roots}")
@@ -65,11 +68,15 @@ for a_val in a_vals:
     #east_roots_filtered = [r for r in east_roots if r[0] > threshold]
     #print(f"North roots filtered: {north_roots_filtered}")
     #print(f"East roots filtered: {east_roots_filtered}")
-    north_root = find_root(north_locus_r, threshold, 10.0, xtol=1e-12)
-    east_root = find_root(east_locus_r, threshold, 10.0, xtol=1e-12)
+    north_root = north_roots[6][0]
+    east_root = east_roots[6][0]
 
-    print(f"a_val: {a_val}")
+    print(f"a_val: {a_val.n()}")
     #print(f"north_roots: {north_roots_filtered}")
     #print(f"east_roots: {east_roots_filtered}")
     D = north_root - east_root
     print(f"D: {D}")
+    if D.contains_zero():
+        print("Panic! We aren't sure if D is positive or negative")
+    else:
+        print("We're sure about the sign of D thanks to the root bounds")
