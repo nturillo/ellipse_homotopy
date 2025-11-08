@@ -47,7 +47,7 @@ for i, a in enumerate(equal_a_list):
 
     if i != len(equal_a_list)-1:
         mid_a = (a + equal_a_list[i+1]) / 2
-        ellipse_tools.plot_r_vs_theta(a = mid_a, img_path=f"Snapshots/{img_idx+1}_a={mid_a:.4f}.png")
+        ellipse_tools.plot_r_vs_theta(a = mid_a, img_path=f"Snapshots/{img_idx}_a={mid_a:.4f}.png")
         img_idx += 1
 
-ellipse_tools.plot_r_vs_theta(a = np.sqrt(2), img_path=f"Snapshots/{img_idx}_a={a:.3f}.png")
+ellipse_tools.plot_r_vs_theta(a = np.sqrt(2), img_path=f"Snapshots/{img_idx}_a={np.sqrt(2):.3f}.png")

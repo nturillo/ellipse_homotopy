@@ -89,7 +89,7 @@ def min_r_given_theta_2(theta, a):
 
 def plot_r_vs_theta(a, num_points=10000, img_path = None):
     if img_path is None:
-        img_path = f"images/r_vs_t_a={a:.3f}.png"
+        img_path = f"images/r_vs_t_a={a:.4f}.png"
 
     ## get evenly spaced points 
     interval = np.linspace(0.0, 0.25, num_points)
@@ -97,10 +97,13 @@ def plot_r_vs_theta(a, num_points=10000, img_path = None):
     Rs = [min_r_given_theta(theta, a) for theta in thetas]
     ## plot
     plt.clf()
-    plt.plot(thetas, Rs)
-    plt.xlabel('t')
-    plt.ylabel('r')
-    plt.title(f'r vs t, a = {a:.3f}')
+    fig, ax = plt.subplots()
+    ax.plot(thetas, Rs)
+    ax.set_xticks([0, np.pi/4, np.pi/2], labels=[r"$0$", r"$\frac{\pi}{4}$", r"$\frac{\pi}{2}$"])
+    plt.xlabel(r"$\theta$")
+    plt.ylabel(r"$s_a(( \cos \theta, \sin \theta))$")
+    plt.title(r"$s_a$" + f' on the first quadrant with ' +  r"$a = $" + f'{a:.4f}')
+    # Set tick positions (in radians)
     plt.savefig(img_path)
  
 def plot_k_points_d_Euclid_apart(k, d, theta, a, img_name = "points_on_ellipse.png", plot_foci=True, verbose = True, titled=False, star_color='blue'):
